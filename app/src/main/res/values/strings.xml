@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Parse Push Segmented by Channels</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- Main Activity -->
+    <string name="main_activity_channel_1_hint">Channel 1</string>
+    <string name="main_activity_channel_2_hint">Channel 2</string>
+
+    <string name="main_activity_calculate_button">Calculate</string>
+    <string name="main_activity_number_users">Found %1$d users</string>
+    <string name="main_activity_message_hint">Message</string>
+    <string name="main_activity_send_button">Send</string>
+
+    <string name="error_empty_field">This field cannot be empty</string>
+
 </resources>
