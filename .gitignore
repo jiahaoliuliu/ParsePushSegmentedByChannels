@@ -1,6 +1,5 @@
 #Internal libraries
-aFileChooser-cbccac1d1cb74a6d57d25c5ded61e4bf4fc40c91/build/
-Adjust/build/
+
 
 #built application files
 *.apk
@@ -37,3 +36,6 @@ Thumbs.db
 #.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 .gradle
 build/
+
+# Internal keys
+app/src/main/java/com/jiahaoliuliu/parsepushsegmentedbychannels/APIKeys.java

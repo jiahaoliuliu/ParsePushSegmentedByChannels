@@ -20,7 +20,7 @@ public class MainApplication extends Application {
         super.onCreate();
 
         // Initialize Parse
-        Parse.initialize(this, "4sEFXR588KWT0Da5lVYXm7iInIeQZufaiyPDIMuX", "nChSNWhG8xoz6zITL2qgKgIlpsfgm96PlgzIfyPh");
+        Parse.initialize(this, APIKeys.APPLICATION_ID, APIKeys.CLIENT_ID);
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
