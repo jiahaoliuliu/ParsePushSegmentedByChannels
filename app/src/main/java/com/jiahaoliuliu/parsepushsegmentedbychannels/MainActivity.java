@@ -12,8 +12,10 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.SendCallback;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -132,12 +134,14 @@ public class MainActivity extends AppCompatActivity {
         String channel2 = channel2EditText.getText().toString();
         String message = messageEditText.getText().toString();
 
-        LinkedList<String> channels = new LinkedList<String>();
-        channels.add(channel1);
-        channels.add(channel2);
+        ParseQuery parsePushQuery = ParseInstallation.getQuery();
+        List<String> channelsList = new ArrayList<String>();
+        channelsList.add(channel1);
+        channelsList.add(channel2);
+        parsePushQuery.whereContainsAll("channels", channelsList);
 
         ParsePush parsePush = new ParsePush();
-        parsePush.setChannels(channels);
+        parsePush.setQuery(parsePushQuery);
         parsePush.setMessage(message);
         parsePush.sendInBackground(new SendCallback() {
             @Override
