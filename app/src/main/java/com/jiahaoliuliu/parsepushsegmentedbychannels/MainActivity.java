@@ -8,13 +8,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+import com.parse.SendCallback;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final boolean IS_TESTING = true;
+
+    private static final String DEFAULT_CAHNNEL_1 = "dubizzle";
+    private static final String DEFAULT_CHANNEL_2 = "samsung";
+    private static final String DEFUALT_MESSAGE = "Default message";
 
     // views
     private EditText channel1EditText;
@@ -45,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
 //        for (String channel : subscribedChannels) {
 //            Log.v(TAG, "Channel: " + channel);
 //        }
+
+        if (IS_TESTING) {
+            channel1EditText.setText(DEFAULT_CAHNNEL_1);
+            channel2EditText.setText(DEFAULT_CHANNEL_2);
+            messageEditText.setText(DEFUALT_MESSAGE);
+        }
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
@@ -65,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
      * Calculate number of users by both channels
      */
     private void calculateNumberUsers() {
-        if (!areAllFieldsOk()) {
+        if (!areChannelFieldsOk()) {
             return;
         }
 
@@ -78,39 +94,81 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Check if all the fields are ok
      * @return
-     *      true if all the fields are ok
+     *      true if all the fields related with channel are ok
      *      false otherwise
      */
-    private boolean areAllFieldsOk() {
-        boolean areAllFieldsOk = true;
+    private boolean areChannelFieldsOk() {
+        boolean areChannelFieldsOk = true;
 
         // Check channel1
         String channel1 = channel1EditText.getText().toString();
-        if (!TextUtils.isEmpty(channel1)) {
-            areAllFieldsOk = false;
+        if (TextUtils.isEmpty(channel1)) {
+            areChannelFieldsOk = false;
             channel1EditText.setError(getString(R.string.error_empty_field));
         }
 
         String channel2 = channel2EditText.getText().toString();
-        if (!TextUtils.isEmpty(channel2)) {
-            areAllFieldsOk = false;
+        if (TextUtils.isEmpty(channel2)) {
+            areChannelFieldsOk = false;
             channel2EditText.setError(getString(R.string.error_empty_field));
         }
 
-        return areAllFieldsOk;
+        return areChannelFieldsOk;
     }
 
     /**
      * Send message to the users
      */
     private void sendMessage() {
-        if (!areAllFieldsOk()) {
+        if (!areChannelFieldsOk()) {
+            return;
+        }
+
+        if (!isMessageFieldOk()) {
             return;
         }
 
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
+        String message = messageEditText.getText().toString();
 
-        // TODO send message to the users
+        LinkedList<String> channels = new LinkedList<String>();
+        channels.add(channel1);
+        channels.add(channel2);
+
+        ParsePush parsePush = new ParsePush();
+        parsePush.setChannels(channels);
+        parsePush.setMessage(message);
+        parsePush.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.v(TAG, "Push send correctly");
+                } else {
+                    Log.e(TAG, "Error sending push", e);
+                }
+            }
+        });
     }
+
+    /**
+     * Check if the message field is ok
+     * @return
+     *      true if the message field is ok
+     *      false otherwise
+     */
+    private boolean isMessageFieldOk() {
+        boolean isMessageFieldOk = true;
+
+        // Check message
+        String message = messageEditText.getText().toString();
+        if (TextUtils.isEmpty(message)) {
+            isMessageFieldOk = false;
+            messageEditText.setError(getString(R.string.error_empty_field));
+        }
+
+        return isMessageFieldOk;
+    }
+
+
 }
