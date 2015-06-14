@@ -10,4 +10,6 @@
     <string name="main_activity_message_hint">Message</string>
     <string name="main_activity_send_button">Send</string>
 
+    <string name="error_empty_field">This field cannot be empty</string>
+
 </resources>
