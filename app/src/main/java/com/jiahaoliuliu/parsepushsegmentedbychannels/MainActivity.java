@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.SendCallback;
@@ -153,8 +154,7 @@ public class MainActivity extends AppCompatActivity {
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
 
-//        ParseQuery parsePushQuery = ParseInstallation.getQuery();
-        ParseQuery parseQuery = ParseQuery.getQuery("_Installation");
+        ParseQuery parseQuery = ParseInstallation.getQuery();
         List<String> channelsList = new ArrayList<String>();
         channelsList.add(channel1);
         channelsList.add(channel2);
