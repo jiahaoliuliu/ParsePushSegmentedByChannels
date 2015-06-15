@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
     private EditText messageEditText;
     private Button sendButton;
+    private TextView tvNumberOfUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         sendButton = (Button) findViewById(R.id.send_button);
         sendButton.setOnClickListener(onClickListener);
+
+        tvNumberOfUsers = (TextView) findViewById(R.id.number_user_text_view);
 
 //        // Get subscribed channels
 //        List<String> subscribedChannels = ParseInstallation.getCurrentInstallation().getList("channels");
@@ -90,6 +95,22 @@ public class MainActivity extends AppCompatActivity {
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
 
+        createQuery().findInBackground(new FindCallback() {
+            @Override
+            public void done(List list, ParseException e) {
+
+                int sizeOfList = list.size();
+
+                Log.e("list size", "The size of the list is: " + sizeOfList);
+                tvNumberOfUsers.setText(sizeOfList + "");
+
+            }
+
+            @Override
+            public void done(Object o, Throwable throwable) {
+
+            }
+        });
         // TODO Calculate the number of users
     }
 
@@ -130,18 +151,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String channel1 = channel1EditText.getText().toString();
-        String channel2 = channel2EditText.getText().toString();
-        String message = messageEditText.getText().toString();
-
-        ParseQuery parsePushQuery = ParseInstallation.getQuery();
-        List<String> channelsList = new ArrayList<String>();
-        channelsList.add(channel1);
-        channelsList.add(channel2);
-        parsePushQuery.whereContainsAll("channels", channelsList);
-
+        ParseQuery parsePushQuery = createQuery();
         ParsePush parsePush = new ParsePush();
         parsePush.setQuery(parsePushQuery);
+        String message = messageEditText.getText().toString();
         parsePush.setMessage(message);
         parsePush.sendInBackground(new SendCallback() {
             @Override
@@ -153,7 +166,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
+
+    private ParseQuery createQuery(){
+        String channel1 = channel1EditText.getText().toString();
+        String channel2 = channel2EditText.getText().toString();
+
+        ParseQuery parsePushQuery = ParseInstallation.getQuery();
+        List<String> channelsList = new ArrayList<String>();
+        channelsList.add(channel1);
+        channelsList.add(channel2);
+        parsePushQuery.whereContainsAll("channels", channelsList);
+
+        return parsePushQuery;
+    }
+
 
     /**
      * Check if the message field is ok
