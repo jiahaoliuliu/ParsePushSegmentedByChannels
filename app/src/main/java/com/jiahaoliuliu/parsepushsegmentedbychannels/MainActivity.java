@@ -9,10 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.SendCallback;
@@ -57,12 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
         tvNumberOfUsers = (TextView) findViewById(R.id.number_user_text_view);
 
-//        // Get subscribed channels
-//        List<String> subscribedChannels = ParseInstallation.getCurrentInstallation().getList("channels");
-//        for (String channel : subscribedChannels) {
-//            Log.v(TAG, "Channel: " + channel);
-//        }
-
         if (IS_TESTING) {
             channel1EditText.setText(DEFAULT_CAHNNEL_1);
             channel2EditText.setText(DEFAULT_CHANNEL_2);
@@ -92,26 +83,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String channel1 = channel1EditText.getText().toString();
-        String channel2 = channel2EditText.getText().toString();
-
-        createQuery().findInBackground(new FindCallback() {
-            @Override
-            public void done(List list, ParseException e) {
-
-                int sizeOfList = list.size();
-
-                Log.e("list size", "The size of the list is: " + sizeOfList);
-                tvNumberOfUsers.setText(sizeOfList + "");
-
-            }
-
-            @Override
-            public void done(Object o, Throwable throwable) {
-
-            }
-        });
         // TODO Calculate the number of users
+        // The follow code give parse exception because the table
+        // _Installation cannot be accessed from client code.
+        try {
+            tvNumberOfUsers.setText(createQuery().count() + "");
+        } catch (ParseException parseException) {
+            Log.e(TAG, "Error finding number of users", parseException);
+        }
     }
 
     /**
@@ -174,13 +153,14 @@ public class MainActivity extends AppCompatActivity {
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
 
-        ParseQuery parsePushQuery = ParseInstallation.getQuery();
+//        ParseQuery parsePushQuery = ParseInstallation.getQuery();
+        ParseQuery parseQuery = ParseQuery.getQuery("_Installation");
         List<String> channelsList = new ArrayList<String>();
         channelsList.add(channel1);
         channelsList.add(channel2);
-        parsePushQuery.whereContainsAll("channels", channelsList);
+        parseQuery.whereContainsAll("channels", channelsList);
 
-        return parsePushQuery;
+        return parseQuery;
     }
 
 
