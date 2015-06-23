@@ -20,7 +20,12 @@ public class MainApplication extends Application {
         super.onCreate();
 
         // Initialize Parse
-        Parse.initialize(this, APIKeys.APPLICATION_ID, APIKeys.CLIENT_ID);
+        if(!MainActivity.IS_TESTING) {
+            //Parse.initialize(this, APIKeys.APPLICATION_ID, APIKeys.CLIENT_ID);
+        } else {
+            Parse.initialize(this, APIKeys.TEST_APPLICATION_ID, APIKeys.TEST_CLIENT_ID);
+        }
+
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -31,5 +36,7 @@ public class MainApplication extends Application {
                 }
             }
         });
+
+        ParsePush.subscribeInBackground("jaboston_test");
     }
 }

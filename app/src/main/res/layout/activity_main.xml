@@ -14,12 +14,45 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <EditText
-            android:id="@+id/channel_1_edit_text"
-            android:layout_width="match_parent"
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/main_activity_channel_1_hint"
-            />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Channels to push to"
+            android:gravity="center"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/channel_1_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/main_activity_channel_1_hint"
+                />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ignore"
+                android:id="@+id/checkBoxChannel1"
+                android:layout_weight="0.8"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="AND"
+            android:gravity="center"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal" />
 
         <EditText
             android:id="@+id/channel_2_edit_text"
@@ -28,11 +61,34 @@
             android:hint="@string/main_activity_channel_2_hint"
             />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Send to users who were last active at:"
+            android:gravity="center"
+            android:id="@+id/textView"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"/>
+
+        <DatePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/datePickerActiveSince"
+            android:layout_gravity="center_horizontal" />
+
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timePickerLastActive"
+            android:layout_gravity="center_horizontal" />
+
         <Button
             android:id="@+id/calculate_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_activity_calculate_button"
+            android:visibility="gone"
             />
 
         <TextView
