@@ -1,5 +1,6 @@
 package com.jiahaoliuliu.parsepushsegmentedbychannels;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,14 +10,16 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.parse.CountCallback;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -34,7 +37,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
     public static final boolean IS_TESTING = true;
@@ -52,6 +55,13 @@ public class MainActivity extends AppCompatActivity{
     private TextView tvNumberOfUsers;
     private DatePicker datePickerActiveSince;
     private TimePicker timePickerLastActive;
+    private CheckBox checkboxChannel1;
+    private CheckBox checkboxChannel2;
+    private Button btnAddChannel;
+
+    private ArrayList<View> channelLayoutArrayList;
+
+    private LayoutInflater inflater;
 
     // default values for year month and day.
     private int mYear = 2015;
@@ -82,6 +92,17 @@ public class MainActivity extends AppCompatActivity{
         sendButton.setOnClickListener(onClickListener);
 
         tvNumberOfUsers = (TextView) findViewById(R.id.number_user_text_view);
+
+        checkboxChannel1 = (CheckBox) findViewById(R.id.checkBoxChannel1);
+        checkboxChannel2 = (CheckBox) findViewById(R.id.checkBoxChannel2);
+
+        btnAddChannel = (Button) findViewById(R.id.btnAddChannel);
+        btnAddChannel.setOnClickListener(onClickListener);
+
+        inflater = LayoutInflater.from(MainActivity.this);
+
+        channelLayoutArrayList = new ArrayList<View>();
+
     }
 
 
@@ -97,7 +118,6 @@ public class MainActivity extends AppCompatActivity{
 //        }
 
         setupViews();
-
         if (IS_TESTING) {
             ParsePush.subscribeInBackground(DEFAULT_CHANNEL_1);
             ParsePush.subscribeInBackground(DEFAULT_CHANNEL_2);
@@ -117,6 +137,9 @@ public class MainActivity extends AppCompatActivity{
                     break;
                 case R.id.send_button:
                     sendMessage();
+                    break;
+                case R.id.btnAddChannel:
+                    addNewChannelLayout();
                     break;
             }
         }
@@ -150,6 +173,14 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // TODO Calculate the number of users
+        // The follow code give parse exception because the table
+        // _Installation cannot be accessed from client code.
+        try {
+            tvNumberOfUsers.setText(createQuery().count() + "");
+        } catch (ParseException parseException) {
+            Log.e(TAG, "Error finding number of users", parseException);
+        }
     }
 
     /**
@@ -163,18 +194,31 @@ public class MainActivity extends AppCompatActivity{
 
         // Check channel1
         String channel1 = channel1EditText.getText().toString();
-        if (TextUtils.isEmpty(channel1)) {
+        if (TextUtils.isEmpty(channel1) && !checkboxChannel1.isChecked()) {
             areChannelFieldsOk = false;
             channel1EditText.setError(getString(R.string.error_empty_field));
         }
 
+        // Check channel2
         String channel2 = channel2EditText.getText().toString();
-        if (TextUtils.isEmpty(channel2)) {
+        if (TextUtils.isEmpty(channel2) && !checkboxChannel2.isChecked()) {
             areChannelFieldsOk = false;
             channel2EditText.setError(getString(R.string.error_empty_field));
         }
 
         return areChannelFieldsOk;
+    }
+
+
+    /**
+     * Inflate a new channel and add it to the ChannelArrayList
+     */
+    private void addNewChannelLayout() {
+        final LinearLayout canvas = (LinearLayout)this.findViewById(R.id.channel_holder);
+        final View cv = inflater.inflate(R.layout.channel_element, canvas, false);
+        canvas.addView(cv);
+        // store to view list
+        channelLayoutArrayList.add(cv);
     }
 
     /**
@@ -256,12 +300,21 @@ public class MainActivity extends AppCompatActivity{
     private ParseQuery createQuery(){
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
-
+        
         ParseQuery parsePushQuery = ParseInstallation.getQuery();
 
         List<String> channelsList = new ArrayList<String>();
         channelsList.add(channel1);
         channelsList.add(channel2);
+
+        for(View v : channelLayoutArrayList){
+            EditText editText = (EditText) v.findViewById(R.id.channel_edit_text);
+            CheckBox checkBox = (CheckBox) v.findViewById(R.id.channel_checkbox);
+
+            if(!checkBox.isChecked() && !editText.getText().toString().isEmpty())
+                channelsList.add(editText.getText().toString());
+        }
+
         parsePushQuery = parsePushQuery.whereContainsAll("channels", channelsList);
 
 
@@ -273,8 +326,9 @@ public class MainActivity extends AppCompatActivity{
         cal.set(mYear, mMonth, mDay, mHours, mMinutes, 0);
         Date d = cal.getTime();
         parsePushQuery.whereGreaterThanOrEqualTo("updatedAt", d);
+        ParseQuery parseQuery = ParseInstallation.getQuery();
 
-        return parsePushQuery;
+        return parseQuery;
     }
 
 

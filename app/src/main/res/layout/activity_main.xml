@@ -31,17 +31,18 @@
 
             <EditText
                 android:id="@+id/channel_1_edit_text"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.75"
                 android:hint="@string/main_activity_channel_1_hint"
                 />
 
             <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:text="ignore"
                 android:id="@+id/checkBoxChannel1"
-                android:layout_weight="0.8"
+                android:layout_weight="0.25"
                 />
         </LinearLayout>
 
@@ -54,12 +55,45 @@
             android:id="@+id/textView3"
             android:layout_gravity="center_horizontal" />
 
+    <LinearLayout
+        android:id="@+id/ll_channel_2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
         <EditText
             android:id="@+id/channel_2_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:hint="Channel 2"
+            />
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="ignore"
+            android:id="@+id/checkBoxChannel2"
+            android:layout_weight="0.25"
+            />
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/channel_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+        </LinearLayout>
+
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/main_activity_channel_2_hint"
-            />
+            android:text="Add Channel"
+            android:id="@+id/btnAddChannel"
+            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="match_parent"
@@ -89,6 +123,7 @@
             android:layout_height="wrap_content"
             android:text="@string/main_activity_calculate_button"
             android:visibility="gone"
+            android:enabled="false"
             />
 
         <TextView
