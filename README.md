@@ -19,7 +19,7 @@ To do so, there are two requirements:
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null) {
+                if (e == null) {
                     Log.v(TAG, "Push send correctly");
                 } else {
                     Log.e(TAG, "Error sending push", e);
