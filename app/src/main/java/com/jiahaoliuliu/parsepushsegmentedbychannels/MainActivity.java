@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
     public static final boolean IS_TESTING = true;
 
     private static final String DEFAULT_CHANNEL_1 = "dbz_test";
-    private static final String DEFAULT_CHANNEL_2 = "algeria";
+    private static final String DEFAULT_CHANNEL_2 = "country_algeria";
     private static final String DEFUALT_MESSAGE = "Welcome to dubizzle :-)";
 
     // views
@@ -216,8 +216,15 @@ public class MainActivity extends Activity {
     private void addNewChannelLayout() {
         final LinearLayout canvas = (LinearLayout)this.findViewById(R.id.channel_holder);
         final View cv = inflater.inflate(R.layout.channel_element, canvas, false);
+
+        // Fix the hint on the channel
+        EditText editText = (EditText) cv.findViewById(R.id.channel_edit_text);
+        editText.setHint("Channel " + ((int)channelLayoutArrayList.size()+3));
+
+        // add the channel layour to the canvas
         canvas.addView(cv);
-        // store to view list
+
+        // store to channel layout to the array for reference later.
         channelLayoutArrayList.add(cv);
     }
 
@@ -300,7 +307,7 @@ public class MainActivity extends Activity {
     private ParseQuery createQuery(){
         String channel1 = channel1EditText.getText().toString();
         String channel2 = channel2EditText.getText().toString();
-        
+
         ParseQuery parsePushQuery = ParseInstallation.getQuery();
 
         List<String> channelsList = new ArrayList<String>();
@@ -315,6 +322,8 @@ public class MainActivity extends Activity {
                 channelsList.add(editText.getText().toString());
         }
 
+        Log.e("CHANNELS", "Channels List: " + channelsList);
+
         parsePushQuery = parsePushQuery.whereContainsAll("channels", channelsList);
 
 
@@ -326,9 +335,8 @@ public class MainActivity extends Activity {
         cal.set(mYear, mMonth, mDay, mHours, mMinutes, 0);
         Date d = cal.getTime();
         parsePushQuery.whereGreaterThanOrEqualTo("updatedAt", d);
-        ParseQuery parseQuery = ParseInstallation.getQuery();
 
-        return parseQuery;
+        return parsePushQuery;
     }
 
 
