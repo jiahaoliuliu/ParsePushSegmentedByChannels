@@ -14,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SendCallback;
 
 import java.util.ArrayList;
@@ -40,9 +43,9 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
-    public static final boolean IS_TESTING = true;
+    public static final boolean IS_TESTING = false;
 
-    private static final String DEFAULT_CHANNEL_1 = "dbz_test";
+    private static final String DEFAULT_CHANNEL_1 = "test_dbz";
     private static final String DEFAULT_CHANNEL_2 = "country_algeria";
     private static final String DEFUALT_MESSAGE = "Welcome to dubizzle :-)";
 
@@ -58,6 +61,7 @@ public class MainActivity extends Activity {
     private CheckBox checkboxChannel1;
     private CheckBox checkboxChannel2;
     private Button btnAddChannel;
+    private Switch switchPlatform;
 
     private ArrayList<View> channelLayoutArrayList;
 
@@ -103,6 +107,35 @@ public class MainActivity extends Activity {
 
         channelLayoutArrayList = new ArrayList<View>();
 
+        switchPlatform = (Switch) findViewById(R.id.platformSwitch);
+        switchPlatform.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setParseBasedOnChecked(isChecked);
+            }
+        });
+
+    }
+
+    private void setParseBasedOnChecked(Boolean isAndroid){
+        if(isAndroid){
+            Parse.initialize(this, APIKeys.ANDROID_APPLICATION_ID, APIKeys.ANDROID_CLIENT_ID);
+        } else {
+            Parse.initialize(this, APIKeys.IOS_APPLICATION_ID, APIKeys.IOS_CLIENT_ID);
+        }
+
+        ParsePush.subscribeInBackground("", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d(TAG, "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e(TAG, "failed to subscribe for push", e);
+                }
+            }
+        });
+
+        ParsePush.subscribeInBackground("jaboston_test");
     }
 
 
@@ -118,13 +151,14 @@ public class MainActivity extends Activity {
 //        }
 
         setupViews();
-        if (IS_TESTING) {
+
+            // subscribe to test channels so we can see the effect of our push
             ParsePush.subscribeInBackground(DEFAULT_CHANNEL_1);
             ParsePush.subscribeInBackground(DEFAULT_CHANNEL_2);
             channel1EditText.setText(DEFAULT_CHANNEL_1);
             channel2EditText.setText(DEFAULT_CHANNEL_2);
             messageEditText.setText(DEFUALT_MESSAGE);
-        }
+
     }
 
 
