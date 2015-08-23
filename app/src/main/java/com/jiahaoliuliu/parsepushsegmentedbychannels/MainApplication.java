@@ -14,6 +14,7 @@ import com.parse.SaveCallback;
 public class MainApplication extends Application {
 
     private static final String TAG = "MainApplication";
+    public static final boolean IS_TESTING = false;
 
     @Override
     public void onCreate() {
@@ -23,8 +24,8 @@ public class MainApplication extends Application {
 
      public void setupParse(){
          // Initialize Parse
-         if(!MainActivity.IS_TESTING) {
-             Parse.initialize(this, APIKeys.APPLICATION_ID, APIKeys.CLIENT_ID);
+         if(!IS_TESTING) {
+             Parse.initialize(this, APIKeys.IOS_APPLICATION_ID, APIKeys.IOS_APPLICATION_ID);
          } else {
              Parse.initialize(this, APIKeys.TEST_APPLICATION_ID, APIKeys.TEST_CLIENT_ID);
          }
@@ -40,6 +41,6 @@ public class MainApplication extends Application {
              }
          });
 
-         ParsePush.subscribeInBackground("jaboston_test");
+
      }
 }

@@ -43,7 +43,6 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
-    public static final boolean IS_TESTING = false;
 
     private static final String DEFAULT_CHANNEL_1 = "test_dbz";
     private static final String DEFAULT_CHANNEL_2 = "country_algeria";
@@ -115,9 +114,16 @@ public class MainActivity extends Activity {
             }
         });
 
+        subscribeToTestChannels();
+
     }
 
     private void setParseBasedOnChecked(Boolean isAndroid){
+        // If we are using testing environment, don't re-initialize parse
+        if (MainApplication.IS_TESTING) {
+            return;
+        }
+
         if(isAndroid){
             Parse.initialize(this, APIKeys.ANDROID_APPLICATION_ID, APIKeys.ANDROID_CLIENT_ID);
         } else {
@@ -135,7 +141,9 @@ public class MainActivity extends Activity {
             }
         });
 
-        ParsePush.subscribeInBackground("jaboston_test");
+        subscribeToTestChannels();
+
+
     }
 
 
@@ -152,13 +160,38 @@ public class MainActivity extends Activity {
 
         setupViews();
 
-            // subscribe to test channels so we can see the effect of our push
-            ParsePush.subscribeInBackground(DEFAULT_CHANNEL_1);
-            ParsePush.subscribeInBackground(DEFAULT_CHANNEL_2);
-            channel1EditText.setText(DEFAULT_CHANNEL_1);
-            channel2EditText.setText(DEFAULT_CHANNEL_2);
-            messageEditText.setText(DEFUALT_MESSAGE);
+        // subscribe to test channels so we can see the effect of our push
+        ParsePush.subscribeInBackground(DEFAULT_CHANNEL_1);
+        ParsePush.subscribeInBackground(DEFAULT_CHANNEL_2);
+        channel1EditText.setText(DEFAULT_CHANNEL_1);
+        channel2EditText.setText(DEFAULT_CHANNEL_2);
+        messageEditText.setText(DEFUALT_MESSAGE);
 
+
+
+    }
+
+    private void subscribeToTestChannels(){
+        ParsePush.subscribeInBackground("jaboston_test", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.v(TAG, "jaboston_test channel subscribed correctly");
+                } else {
+                    Log.e(TAG, "Error subscribing jaboston_test channel", e);
+                }
+            }
+        });
+        ParsePush.subscribeInBackground("jaboston_test_2", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.v(TAG, "jaboston_test_2 channel subscribed correctly");
+                } else {
+                    Log.e(TAG, "Error subscribing jaboston_test_2 channel", e);
+                }
+            }
+        });
     }
 
 
@@ -359,7 +392,6 @@ public class MainActivity extends Activity {
         Log.e("CHANNELS", "Channels List: " + channelsList);
 
         parsePushQuery = parsePushQuery.whereContainsAll("channels", channelsList);
-
 
         // time now
         long timeNow = Calendar.getInstance().getTimeInMillis();
