@@ -12,4 +12,7 @@
 
     <string name="error_empty_field">This field cannot be empty</string>
 
+    <string name="main_activity_app_version_title">App version not equal to:(optional)</string>
+    <string name="main_activity_app_version_hint">Enter app version here</string>
+
 </resources>

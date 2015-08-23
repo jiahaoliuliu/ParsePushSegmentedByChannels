@@ -44,9 +44,17 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
+    // List of default channels
     private static final String DEFAULT_CHANNEL_1 = "test_dbz";
     private static final String DEFAULT_CHANNEL_2 = "country_algeria";
+
+    // The default message
     private static final String DEFUALT_MESSAGE = "Welcome to dubizzle :-)";
+
+    // The channel key
+    private static final String PARSE_QUERY_KEY_CHANNELS = "channels";
+    private static final String PARSE_QUERY_KEY_UPDATED_AT = "updatedAt";
+    private static final String PARSE_QUERY_KEY_APP_VERSION = "appVersion";
 
     // views
     private EditText channel1EditText;
@@ -61,6 +69,7 @@ public class MainActivity extends Activity {
     private CheckBox checkboxChannel2;
     private Button btnAddChannel;
     private Switch switchPlatform;
+    private EditText mAppVersionEditText;
 
     private ArrayList<View> channelLayoutArrayList;
 
@@ -114,6 +123,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        mAppVersionEditText = (EditText) findViewById(R.id.app_version_edit_text);
+
         subscribeToTestChannels();
 
     }
@@ -166,8 +177,6 @@ public class MainActivity extends Activity {
         channel1EditText.setText(DEFAULT_CHANNEL_1);
         channel2EditText.setText(DEFAULT_CHANNEL_2);
         messageEditText.setText(DEFUALT_MESSAGE);
-
-
 
     }
 
@@ -336,8 +345,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-
-
     }
 
     // when the user selects a date, set the furthest date back to query.
@@ -391,7 +398,7 @@ public class MainActivity extends Activity {
 
         Log.e("CHANNELS", "Channels List: " + channelsList);
 
-        parsePushQuery = parsePushQuery.whereContainsAll("channels", channelsList);
+        parsePushQuery = parsePushQuery.whereContainsAll(PARSE_QUERY_KEY_CHANNELS, channelsList);
 
         // time now
         long timeNow = Calendar.getInstance().getTimeInMillis();
@@ -400,7 +407,13 @@ public class MainActivity extends Activity {
         Calendar cal = Calendar.getInstance();
         cal.set(mYear, mMonth, mDay, mHours, mMinutes, 0);
         Date d = cal.getTime();
-        parsePushQuery.whereGreaterThanOrEqualTo("updatedAt", d);
+        parsePushQuery.whereGreaterThanOrEqualTo(PARSE_QUERY_KEY_UPDATED_AT, d);
+
+        // App version
+        String appVersion = mAppVersionEditText.getText().toString();
+        if (!TextUtils.isEmpty(appVersion)) {
+            parsePushQuery.whereNotEqualTo(PARSE_QUERY_KEY_APP_VERSION, appVersion);
+        }
 
         return parsePushQuery;
     }
@@ -424,6 +437,4 @@ public class MainActivity extends Activity {
 
         return isMessageFieldOk;
     }
-
-
 }

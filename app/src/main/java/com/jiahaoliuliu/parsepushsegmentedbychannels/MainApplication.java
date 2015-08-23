@@ -14,7 +14,7 @@ import com.parse.SaveCallback;
 public class MainApplication extends Application {
 
     private static final String TAG = "MainApplication";
-    public static final boolean IS_TESTING = false;
+    public static final boolean IS_TESTING = true;
 
     @Override
     public void onCreate() {
@@ -30,7 +30,7 @@ public class MainApplication extends Application {
              Parse.initialize(this, APIKeys.TEST_APPLICATION_ID, APIKeys.TEST_CLIENT_ID);
          }
 
-         ParsePush.subscribeInBackground("", new SaveCallback() {
+         ParsePush.subscribeInBackground("TestingAppVersion", new SaveCallback() {
              @Override
              public void done(ParseException e) {
                  if (e == null) {

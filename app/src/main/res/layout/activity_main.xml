@@ -154,6 +154,22 @@
             android:id="@+id/timePickerLastActive"
             android:layout_gravity="center_horizontal" />
 
+        <!-- App version -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_activity_app_version_title"
+            />
+
+        <EditText
+            android:id="@+id/app_version_edit_text"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:hint="@string/main_activity_app_version_hint"
+            />
+
+        <!-- It is not possible to calculate the number of user
+            for now -->
         <Button
             android:id="@+id/calculate_button"
             android:layout_width="match_parent"
@@ -167,6 +183,7 @@
             android:id="@+id/number_user_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             />
 
         <EditText
